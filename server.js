@@ -1,18 +1,18 @@
-const http = require('http');
-const https = require('https');
-const axios = require('axios');
+// const http = require('http');
+// const https = require('https');
+// const axios = require('axios');
 const cheerio = require('cheerio');
 const Nightmare = require('nightmare')
 const nightmare = Nightmare({ show: true })
 
-const server = http.createServer();
+// const server = http.createServer();
 
 const url = 'https://www.flipkart.com/';
 
 nightmare
   .goto(url)
   .wait('body')
-  // .click('button._2ISNhP ._29YdH8')
+  .click('button._2AkmmA._29YdH8')
   .type('input.LM6RPg', 'nodejs books')
   .click('button.vh79eN')
   .wait('div.bhgxx2')
@@ -24,12 +24,22 @@ nightmare
     console.log(err);
   });
 
-let getDaa = html => {
+let getData = html => {
   data = [];
   const $ = cheerio.load(html);
-  $('div.._1HmYoV._35HD7C:nth-child(2) div.bhgxx.col-12-12').each((row, raw_element) => {
-    $$(raw)
-  })
+  $('div._1HmYoV._35HD7C:nth-child(2) div.bhgxx2.col-12-12').each((row, raw_element) => {
+    $(raw_element).find('div div div').each((i, elem) => {
+      let title = $(elem).find('div div a:nth-child(2)').text();
+      let link = $(elem).find('div div a:nth-child(2)').attr('href');
+      if (title) {
+        data.push({
+          title : title,
+          link : link
+        });
+      }
+    });
+  });
+  return data;
 }
 // axios.get(url)
 //   .then(response => {
